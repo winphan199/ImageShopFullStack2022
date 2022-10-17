@@ -2,6 +2,9 @@
     --font-size: 1.6rem;
 
     height: 80px;
+    position: fixed;
+    width: 100%;
+    background-color: #fff;
 }
 
 .header__container {
@@ -49,13 +52,10 @@
     opacity: 0.8;
 }
 
-.button:last-child {
-    margin-left: 8px;
-}
-
 .button--primary {
     background-color: var(--primary-color);
     color: #fff;
+    margin-right: 8px;
 }
 
 .actions {
@@ -65,8 +65,8 @@
     & .avatar {
         display: flex;
         align-items: center;
-        margin-left: 8px;
-        background-color: rgb(239, 239, 239);
+        margin-left: 24px;
+        background-color: #fff;
         border-radius: 50%;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;

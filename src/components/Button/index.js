@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function Button({title, type, to, onClick, ...params }) {
+function Button({title, type, to, onClick, icon, ...params }) {
     let Component = 'button';
     let props = {
         onClick,
@@ -12,7 +12,7 @@ function Button({title, type, to, onClick, ...params }) {
         props.to = to;
     }
     return <Component {...props}>
-        {title}
+        {icon ? icon : title}
     </Component>;
 }
 
