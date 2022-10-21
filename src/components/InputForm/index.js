@@ -1,39 +1,60 @@
+import { auth, logInWithEmailAndPassword, registerWithEmailAndPassword } from '~/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import classNames from 'classnames/bind';
 import styles from './InputForm.module.scss';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { IconBrand } from '../Icons/Icons';
 import CloseBtn from '../CloseBtn';
 import validator from '~/services/validate';
+import Loading from '../Loading';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const cx = classNames.bind(styles);
 
 function InputForm({ type = 'login', onClick }) {
+    const [user, loading, error] = useAuthState(auth);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLoginMode, setIsLoginMode] = useState(false);
     const [isValidFirstName, setIsValidFirstName] = useState(false);
     const [isValidLastName, setIsValidLastName] = useState(false);
-    const [isValidUserName, setIsValidUserName] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(false);
     const [isValidPassword, setIsValidPassword] = useState(false);
     const [isValid, setIsValid] = useState(false);
+    const [btnContent, setBtnContent] = useState(() => {
+        return isLoginMode ? 'Login' : 'Register';
+    });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (type === 'register') {
-            setIsLogin(false);
+            setIsLoginMode(false);
         } else if (type === 'login') {
-            setIsLogin(true);
+            setIsLoginMode(true);
         }
     }, [type]);
 
     useEffect(() => {
-        if (isLogin) {
-            setIsValid(isValidUserName && isValidPassword);
+        if (isLoginMode) {
+            setIsValid(isValidEmail && isValidPassword);
         } else {
-            setIsValid(isValidFirstName && isValidLastName && isValidUserName && isValidPassword);
+            setIsValid(isValidFirstName && isValidLastName && isValidEmail && isValidPassword);
         }
-    }, [isValidFirstName, isValidLastName, isValidUserName, isValidPassword, isLogin]);
+    }, [isValidFirstName, isValidLastName, isValidEmail, isValidPassword, isLoginMode]);
+
+    useEffect(() => {
+        if (loading) {
+            setBtnContent(<Loading width="16px" height="16px" />);
+            return;
+        } else {
+            setBtnContent(isLoginMode ? 'Login' : 'Register');
+        }
+
+        if (user) {
+        }
+    }, [user, loading, error, isLoginMode]);
 
     const handleValidate = (setter, rules) => {
         const isValidValue = validator({
@@ -44,9 +65,39 @@ function InputForm({ type = 'login', onClick }) {
         setter(isValidValue);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(isValid);
+
+        if (!isValid) return;
+
+        if (isLoginMode) {
+            const err = await logInWithEmailAndPassword(email, password);
+
+            if (err) {
+                toast.error(err.message, {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                });
+            } else {
+                toast.success('Login Sucessful!', {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                });
+                onClick();
+            }
+        } else {
+            const err = await registerWithEmailAndPassword(firstName + ' ' + lastName, email, password);
+            console.log(err);
+
+            if (err) {
+                toast.error(err.message, {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                });
+            } else {
+                toast.success('Register Sucessful!', {
+                    position: toast.POSITION.BOTTOM_CENTER,
+                });
+                onClick();
+            }
+        }
     };
 
     return (
@@ -54,11 +105,11 @@ function InputForm({ type = 'login', onClick }) {
             <div className={cx('heading')}>
                 <div className={cx('logo')}>
                     <IconBrand className={cx('logo-img')} />
-                    <h3>{isLogin ? 'Login' : 'Register'}</h3>
+                    <h3>{isLoginMode ? 'Login' : 'Register'}</h3>
                 </div>
             </div>
             <form onSubmit={handleSubmit} className={cx('form')} id="submit-form">
-                {!isLogin && (
+                {!isLoginMode && (
                     <div className={cx('form-item')}>
                         <label htmlFor="firstName" className={cx('form-item__label')}>
                             First Name
@@ -78,7 +129,7 @@ function InputForm({ type = 'login', onClick }) {
                         <p className={cx('form-item__error-msg')}></p>
                     </div>
                 )}
-                {!isLogin && (
+                {!isLoginMode && (
                     <div className={cx('form-item')}>
                         <label htmlFor="lastName" className={cx('form-item__label')}>
                             Last Name
@@ -110,7 +161,7 @@ function InputForm({ type = 'login', onClick }) {
                         type="text"
                         value={email}
                         onChange={(e) => {
-                            handleValidate(setIsValidUserName, [
+                            handleValidate(setIsValidEmail, [
                                 validator.isRequired(e.target),
                                 validator.isEmail(e.target),
                             ]);
@@ -118,7 +169,7 @@ function InputForm({ type = 'login', onClick }) {
                             setEmail(e.target.value);
                         }}
                         onFocus={(e) =>
-                            handleValidate(setIsValidUserName, [
+                            handleValidate(setIsValidEmail, [
                                 validator.isRequired(e.target),
                                 validator.isEmail(e.target),
                             ])
@@ -154,10 +205,10 @@ function InputForm({ type = 'login', onClick }) {
                 </div>
 
                 <button disabled={!isValid} type="submit" className={cx('submit-btn')}>
-                    {isLogin ? 'Login' : 'Register'}
+                    <p>{btnContent}</p>
                 </button>
             </form>
-            <CloseBtn onClick={onClick} />
+            <CloseBtn onClick={onClick} className={cx('close-btn')} />
         </div>
     );
 }

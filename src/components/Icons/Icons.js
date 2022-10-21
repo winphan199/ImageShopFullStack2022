@@ -20,3 +20,33 @@ export function IconClose({ height = 32, width = 32, className }) {
         </svg>
     );
 }
+
+export function IconLogOut({ height = 32, width = 32, className }) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} className={className} fill="currentcolor">
+            <path d="M15 24H1c-.6 0-1-.4-1-1V1c0-.6.4-1 1-1h14c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1s-1-.4-1-1V2H2v20h12v-6c0-.6.4-1 1-1s1 .4 1 1v7c0 .6-.4 1-1 1z" />
+            <path d="M23 13H8c-.6 0-1-.4-1-1s.4-1 1-1h15c.6 0 1 .4 1 1s-.4 1-1 1z" />
+            <path d="M23 13c-.3 0-.5-.1-.7-.3l-4-4c-.4-.4-.4-1 0-1.4s1-.4 1.4 0l4 4c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3z" />
+            <path d="M19 17c-.3 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4l4-4c.4-.4 1-.4 1.4 0s.4 1 0 1.4l-4 4c-.2.2-.4.3-.7.3z" />
+        </svg>
+    );
+}
+
+export function IconLoading({ height = 32, width = 32, className }) {
+    return (
+        <svg
+            width={width}
+            height={height}
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            className={className}
+        >
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M13.917 7A6.002 6.002 0 0 0 2.083 7H1.071a7.002 7.002 0 0 1 13.858 0h-1.012z"
+            />
+        </svg>
+    );
+}

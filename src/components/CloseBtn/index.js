@@ -5,9 +5,9 @@ import { IconClose } from '../Icons/Icons';
 const cx = classNames.bind(styles);
 
 
-function CloseBtn({onClick}) {
+function CloseBtn({onClick, className}) {
     return (
-        <div className={cx('close-btn')} onClick={onClick}>
+        <div className={cx('close-btn', className)} onClick={onClick}>
             <IconClose width={20} height={20} />
         </div>
     );

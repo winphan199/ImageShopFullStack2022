@@ -11,7 +11,7 @@ function ImageFullScreen({ src, alt, onClick, className }) {
             <div className={cx('content')}>
                 <img src={src} alt={alt} className={cx('img')} />
             </div>
-            <CloseBtn onClick={onClick} />
+            <CloseBtn onClick={onClick} className={cx('close-btn')} />
         </div>
     );
 }
