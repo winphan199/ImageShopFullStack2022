@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 function ImageContainer() {
     const uploadUrl = 'https://imageshop-d8a14-default-rtdb.europe-west1.firebasedatabase.app/images.json';
     const [showModal, setShowModal] = useState(false);
-    const [isLoading, setIsloading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [images, setImages] = useState([]);
 
     const [fullSizeImage, setFullSizeImage] = useState({
@@ -22,7 +22,6 @@ function ImageContainer() {
 
     useEffect(() => {
         fetchImages();
-        setIsloading(false);
     }, []);
 
     const handleShowModal = () => {
@@ -35,6 +34,7 @@ function ImageContainer() {
     };
 
     const fetchImages = async () => {
+        setIsLoading(true);
         const res = await fetch(uploadUrl);
         const data = await res.json();
 
@@ -49,8 +49,11 @@ function ImageContainer() {
             });
         }
 
+        setIsLoading(false);
         setImages(fetchedImages);
     };
+
+    console.log(isLoading)
 
     return (
         <div className={cx('container')}>
